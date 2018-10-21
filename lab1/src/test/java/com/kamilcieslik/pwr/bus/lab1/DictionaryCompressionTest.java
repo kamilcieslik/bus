@@ -37,7 +37,7 @@ public class DictionaryCompressionTest {
     }
 
     @Test
-    public void assignToDictionaryElementsBinaryValuesTest(){
+    public void assignToDictionaryElementsBinaryValuesTest() {
         // given
         Integer bitsPerChar = 10;
         var dictionary = new ImmutableList.Builder<Character>().add('A').add('B').add('D').add('C').build();
