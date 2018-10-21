@@ -43,6 +43,7 @@
     <modules>
         <module>commons</module>
         <module>lab1</module>
+        <module>lab2</module>
     </modules>
 
     <prerequisites>
