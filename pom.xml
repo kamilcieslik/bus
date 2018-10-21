@@ -34,6 +34,7 @@
         <commons-io.version>2.6</commons-io.version>
         <javassist.version>3.23.1-GA</javassist.version>
         <activation.version>1.1.1</activation.version>
+        <commons-lang.version>2.6</commons-lang.version>
 
         <!-- Plugins -->
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
@@ -45,10 +46,6 @@
         <module>lab1</module>
         <module>lab2</module>
     </modules>
-
-    <prerequisites>
-        <maven>3.0.4</maven>
-    </prerequisites>
 
     <dependencyManagement>
         <dependencies>
@@ -89,6 +86,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.activation</groupId>

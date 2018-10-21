@@ -4,6 +4,7 @@ import com.kamilcieslik.pwr.bus.commons.TextFileReaderWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +39,8 @@ public class DictionaryCompression {
 
         result.append((char) x);
         dictionary.forEach(result::append);
+        result.append(convertBitsToCharacter(StringUtils.rightPad(Integer.toBinaryString(k), 8, "0")));
+
 
         textFileReaderWriter.writeToFile(compressedFilename, result.toString());
     }
