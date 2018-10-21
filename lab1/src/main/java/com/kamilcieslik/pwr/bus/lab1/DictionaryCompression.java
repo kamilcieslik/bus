@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -23,29 +24,58 @@ public class DictionaryCompression {
         String text = textFileReaderWriter.readFromFile(filename);
         var result = new StringBuffer();
 
-        var dictionary = text.chars().mapToObj(character -> (char) character).collect(Collectors.toSet());
-
-        AtomicReference<Integer> idx = new AtomicReference<>(0);
-        Map<Character, Integer> characterValues = new HashMap<>();
-        dictionary.forEach(character -> {
-            characterValues.put(character, idx.get());
-            idx.getAndSet(idx.get() + 1);
-        });
-
+        var dictionary = text.chars().mapToObj(character -> (char) character).distinct().collect(Collectors.toList());
         int x = dictionary.size();
         int n = BigDecimal.valueOf(Math.log(x) / Math.log(2)).setScale(0, RoundingMode.UP).intValue();
         int k = (8 - (3 + text.length() * n) % 8) % 8;
-        log.info("Dictionary: {}, dictionary size: {}, n (bits per char): {}, k: {}", dictionary, x, n, k);
+
+        var dictionaryWithBinaryValues = assignToDictionaryElementsBinaryValues(dictionary, n);
+        log.info("Dictionary with binary values: {}, dictionary size: {}, n: {}, k: {}", dictionaryWithBinaryValues, x, n, k);
 
         result.append((char) x);
         dictionary.forEach(result::append);
-        result.append(convertBitsToCharacter(StringUtils.rightPad(Integer.toBinaryString(k), 8, "0")));
 
+        var bits = new StringBuffer(Integer.toBinaryString(k));
+        var otherBits = new StringBuffer(StringUtils.EMPTY);
+        text.chars().mapToObj(c -> (char) c).forEach(character -> {
+            if (otherBits.length() > 0) {
+                bits.append(otherBits);
+                otherBits.delete(0, otherBits.length());
+            }
+
+            bits.append(dictionaryWithBinaryValues.get(character));
+
+            if (bits.length() > 8) {
+                otherBits.append(bits.substring(8, bits.length()));
+            }
+
+            if (bits.length() >= 8) {
+                result.append(convertBitsToCharacter(bits.substring(0, 8)));
+                bits.delete(0, bits.length());
+            }
+        });
+
+        if (otherBits.length() > 0) {
+            log.info("Last bits '{}'", otherBits.toString());
+            result.append(convertBitsToCharacter(StringUtils.rightPad(otherBits.toString(), 8, "1")));
+        }
 
         textFileReaderWriter.writeToFile(compressedFilename, result.toString());
     }
 
+    Map<Character, String> assignToDictionaryElementsBinaryValues(List<Character> dictionary, Integer bitsPerChar) {
+        AtomicReference<Integer> idx = new AtomicReference<>(0);
+        Map<Character, String> characterBinaryValues = new HashMap<>();
+        dictionary.forEach(character -> {
+            characterBinaryValues.put(character, StringUtils.leftPad(Integer.toBinaryString(idx.get()), bitsPerChar, "0"));
+            idx.getAndSet(idx.get() + 1);
+        });
+        return characterBinaryValues;
+    }
+
     Character convertBitsToCharacter(String bits) {
-        return (char) Integer.parseInt(bits, 2);
+        Character character = (char) Integer.parseInt(bits, 2);
+        log.info("Conversion bits '{}' to '{}' character", bits, character);
+        return character;
     }
 }

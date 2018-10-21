@@ -1,5 +1,7 @@
 package com.kamilcieslik.pwr.bus.lab1;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.kamilcieslik.pwr.bus.commons.TextFileReaderWriter;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,24 @@ public class DictionaryCompressionTest {
 
         // then
         assertEquals((char) 49, result);
+    }
+
+    @Test
+    public void assignToDictionaryElementsBinaryValuesTest(){
+        // given
+        Integer bitsPerChar = 10;
+        var dictionary = new ImmutableList.Builder<Character>().add('A').add('B').add('D').add('C').build();
+
+        // when
+        var result = dictionaryCompression.assignToDictionaryElementsBinaryValues(dictionary, bitsPerChar);
+
+        // then
+        assertEquals(new ImmutableMap.Builder<Character, String>()
+                .put('A', "0000000000")
+                .put('B', "0000000001")
+                .put('C', "0000000011")
+                .put('D', "0000000010")
+                .build(), result);
     }
 
     @Test
