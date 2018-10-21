@@ -51,9 +51,21 @@ public class CaesarCipher {
 
             char encryptedCharacterAfterNegativeInversion = (char) ~character;
             if (Character.isUpperCase(encryptedCharacterAfterNegativeInversion)) {
-                newCharacter = Optional.of((char) ((encryptedCharacterAfterNegativeInversion - key - 65) % 26 + 65));
+                int ascii = encryptedCharacterAfterNegativeInversion - key;
+                if (ascii < 65) {
+                    ascii += 26;
+                } else if (ascii > 90) {
+                    ascii -= 27;
+                }
+                newCharacter = Optional.of((char) ascii);
             } else if (Character.isLowerCase(encryptedCharacterAfterNegativeInversion)) {
-                newCharacter = Optional.of((char) ((encryptedCharacterAfterNegativeInversion - key - 97) % 26 + 97));
+                int ascii = encryptedCharacterAfterNegativeInversion - key;
+                if (ascii < 97) {
+                    ascii += 26;
+                } else if (ascii > 122) {
+                    ascii -= 27;
+                }
+                newCharacter = Optional.of((char) ascii);
             }
 
             newCharacter.ifPresentOrElse(
