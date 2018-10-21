@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -22,6 +23,18 @@ public class DictionaryCompressionTest {
     }
 
     @Test
+    public void convertBitsToCharacterTest() {
+        // given
+        String bits = "00110001";
+
+        // when
+        char result = dictionaryCompression.convertBitsToCharacter(bits);
+
+        // then
+        assertEquals((char) 49, result);
+    }
+
+    @Test
     public void compressTextTest() {
         // given
         String fileContent = "AACCCAACBADBBCD";
@@ -34,7 +47,7 @@ public class DictionaryCompressionTest {
         String expectedCompressedContent
                 = String.valueOf(Character.toChars(4)) + "ACBD"
                 + String.valueOf(Character.toChars(224)) + String.valueOf(Character.toChars(168))
-                + String.valueOf(Character.toChars(69)) + String.valueOf(Character.toChars(211))
+                + String.valueOf(Character.toChars(49)) + String.valueOf(Character.toChars(211))
                 + String.valueOf(Character.toChars(255));
         verify(textFileReaderWriter, times(1)).writeToFile("any", expectedCompressedContent);
     }

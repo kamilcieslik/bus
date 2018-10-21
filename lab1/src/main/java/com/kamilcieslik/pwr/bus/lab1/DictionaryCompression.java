@@ -36,6 +36,13 @@ public class DictionaryCompression {
         int k = (8 - (3 + text.length() * n) % 8) % 8;
         log.info("Dictionary: {}, dictionary size: {}, n (bits per char): {}, k: {}", dictionary, x, n, k);
 
+        result.append((char) x);
+        dictionary.forEach(result::append);
+
         textFileReaderWriter.writeToFile(compressedFilename, result.toString());
+    }
+
+    Character convertBitsToCharacter(String bits) {
+        return (char) Integer.parseInt(bits, 2);
     }
 }
