@@ -11,6 +11,11 @@
 
     <artifactId>lab2</artifactId>
 
+    <properties>
+        <!-- Dependencies -->
+        <jnativehook.version>2.1.0</jnativehook.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -29,6 +34,13 @@
         <dependency>
             <groupId>com.kamilcieslik.pwr</groupId>
             <artifactId>commons</artifactId>
+        </dependency>
+
+        <!-- External -->
+        <dependency>
+            <groupId>com.1stleg</groupId>
+            <artifactId>jnativehook</artifactId>
+            <version>${jnativehook.version}</version>
         </dependency>
     </dependencies>
 </project>
